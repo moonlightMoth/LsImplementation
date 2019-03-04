@@ -1,0 +1,6 @@
+.idea/*.xml
+.gradle
+build/
+gradle-app.settings
+.gradletasknamecache
+gradle/wrapper/gradle-wrapper.properties
