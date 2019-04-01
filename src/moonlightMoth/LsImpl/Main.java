@@ -4,15 +4,19 @@ public class Main
 {
     public static void main(String[] args)
     {
-        //ParamsCLI params = new ParamsCLI(args);
-
-        domain(new String[]{"-o", "tank", "sas", "ys"});
+        doMain(new String[]{"test/moonlightMoth/LsImpl"});
     }
 
-    private static void domain(String[] args)
+    private static void doMain(String[] args)
     {
-        ParamsCLI params = new ParamsCLI(args);
-        System.out.println(params);
+        ParamsContainer params = ParamsContainer.getInstance(args);
+
+        if (params != null)
+        {
+            System.out.println(params);
+            LsInvoker.invoke(params);
+        }
+
     }
 
 

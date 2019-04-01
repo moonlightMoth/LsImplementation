@@ -1,4 +1,4 @@
-.idea/*.xml
+.idea
 .gradle
 build/
 gradle-app.settings
