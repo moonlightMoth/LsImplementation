@@ -13,7 +13,7 @@ class LsInvoker
     private static File outFile;
     private static ReversibleStringBuilder rsb;
     private static StringBuilder sb = new StringBuilder();
-    private static SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+    private static SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 
     static void invoke(ParamsContainer pc)
     {

@@ -45,10 +45,6 @@ class ParamsContainer
             if (params.args.isEmpty() || params.args.size() == 1 && params.isOutputToFile)
                 params.args.add(".");
 
-            params.args.forEach((s) -> {
-                System.out.println(s);
-            });
-
         }
         catch (CmdLineException e)
         {
