@@ -19,7 +19,7 @@ class ParamsContainer
     @Option(name = "-o", usage = "File to print ls result to", metaVar = "[outfile]")
     boolean isOutputToFile;
 
-    @Argument (usage = "path to ls and file to output", required = true, metaVar = "[outfile] <lsdir>")
+    @Argument (usage = "path to ls and file to output", metaVar = "[outfile] <lsdir>")
     List<String> args = new ArrayList<>();
 
     private ParamsContainer()
@@ -32,30 +32,30 @@ class ParamsContainer
         ParamsContainer params = new ParamsContainer();
         CmdLineParser parser = new CmdLineParser(params);
 
-        if (args.length < 1)
+        try
         {
-            parser.printUsage(System.out);
-            return null;
-        }
-        else
-        {
-            try
-            {
-                parser.parseArgument(args);
+            parser.parseArgument(args);
 
-                if (params.args.size() > 2 || params.args.isEmpty())
-                {
-                    parser.printUsage(System.out);
-                    return null;
-                }
-
-            }
-            catch (CmdLineException e)
+            if (params.args.size() > 2 || params.args.isEmpty() && params.isOutputToFile)
             {
                 parser.printUsage(System.out);
                 return null;
             }
+
+            if (params.args.isEmpty() || params.args.size() == 1 && params.isOutputToFile)
+                params.args.add(".");
+
+            params.args.forEach((s) -> {
+                System.out.println(s);
+            });
+
         }
+        catch (CmdLineException e)
+        {
+            parser.printUsage(System.out);
+            return null;
+        }
+
 
         return params;
     }

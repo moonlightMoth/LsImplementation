@@ -4,7 +4,7 @@ public class Main
 {
     public static void main(String[] args)
     {
-        doMain(new String[]{"test/moonlightMoth/LsImpl"});
+        doMain(args);
     }
 
     private static void doMain(String[] args)
@@ -13,7 +13,6 @@ public class Main
 
         if (params != null)
         {
-            System.out.println(params);
             LsInvoker.invoke(params);
         }
 

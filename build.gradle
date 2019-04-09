@@ -3,16 +3,36 @@ plugins {
 }
 
 group 'moonlightMoth.group'
-version '1.0-SNAPSHOT'
 
 sourceCompatibility = 1.8
+
+libsDirName = '/home/moonlightmoth/artifacts/LsImplementation'
 
 repositories {
     mavenCentral()
 }
 
+configurations {
+    extraLibs
+}
+
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
-    compile 'org.jetbrains:annotations:16.0.2'
-    compile 'args4j:args4j:2.33'
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
+    implementation 'org.jetbrains:annotations:16.0.2'
+    extraLibs 'args4j:args4j:2.33'
+    configurations.compile.extendsFrom(configurations.extraLibs)
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class' : 'moonlightMoth.LsImpl.Main'
+    }
+    from {
+        configurations.extraLibs.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+sourceSets {
+    main.java.srcDirs = ['src']
+    test.java.srcDirs = ['test']
 }
