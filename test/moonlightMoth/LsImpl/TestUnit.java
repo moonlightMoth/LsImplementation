@@ -4,35 +4,33 @@ import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.*;
-import java.text.SimpleDateFormat;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class TestUnit
 {
-    SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
     private PipedInputStream pis = new PipedInputStream();
     private PrintStream ps;
     private String separator = "###";
-    BufferedReader br;
+    private BufferedReader br;
+    private BufferedReader fileBr;
 
-    PrintStream oldOs;
-
-    private String testDirNameRoot = "testDir/";
-    private File testDirRoot = new File(testDirNameRoot);
-    private File outFile = new File("outputFile");
-    private String dirName = "dasIstDirectory/";
-    private File dirFile = new File(testDirNameRoot + dirName);
+    private String testDirRootName = "testDir/";
+    private String dirName = testDirRootName + "dasIstDirectory/";
+    private String outFileName = "outputFile.txt";
+    private File testDirRoot = new File(testDirRootName);
+    private File outFile = new File(outFileName);
+    private File dirFile = new File(dirName);
 
     private File[] fileArray = new File[] {
-            new File(testDirNameRoot + "raz.txt"),
-            new File(testDirNameRoot + "dva.saf"),
-            new File (testDirNameRoot + "tri.pat")};
+            new File(testDirRootName + "raz.txt"),
+            new File(testDirRootName + "dva.saf"),
+            new File (testDirRootName + "tri.pat")};
 
     private File[] fileArrayInDir = new File[] {
-            new File(testDirNameRoot + dirName + "alpha.txt"),
-            new File(testDirNameRoot + dirName + "beta.saf"),
-            new File (testDirNameRoot + dirName + "gamma.pat"),
-            new File (testDirNameRoot + dirName + "omega")};
+            new File(dirName + "alpha.txt"),
+            new File(dirName + "beta.saf"),
+            new File ( dirName + "gamma.pat"),
+            new File ( dirName + "omega")};
 
     @BeforeAll
     public void before()
@@ -46,8 +44,6 @@ public class TestUnit
             e.printStackTrace();
         }
 
-        oldOs = System.out;
-
         System.setOut(ps);
 
         try
@@ -60,16 +56,25 @@ public class TestUnit
         }
 
         br = new BufferedReader(new InputStreamReader(pis));
+        try
+        {
+            fileBr = new BufferedReader(new FileReader(outFileName));
+        }
+        catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     @Test
     void testCaseDir() throws IOException
     {
+        System.setOut(ps);
         String expected =
-                "dva.saf\ndasIstDirectory\ntri.pat\nraz.txt";
+                "dva.saf" + System.lineSeparator() + "dasIstDirectory" + System.lineSeparator() + "tri.pat" + System.lineSeparator() + "raz.txt";
 
 
-        Main.main(new String[] {testDirNameRoot});
+        Main.main(new String[] {testDirRootName});
         System.out.println(separator);
 
         assertEquals(expected, readOutput());
@@ -80,15 +85,15 @@ public class TestUnit
     @Test
     void testCaseExtendedOutputDir() throws IOException
     {
-
+        System.setOut(ps);
         String expected =
-                        "- 2 1000  1600      dva.saf\n" +
-                        "d 7 1000  0        dasIstDirectory\n" +
-                        "- 7 1000  2400      tri.pat\n" +
+                        "- 2 1000  1600      dva.saf" + System.lineSeparator() +
+                        "d 7 1000  0        dasIstDirectory" + System.lineSeparator() +
+                        "- 7 1000  2400      tri.pat" + System.lineSeparator() +
                         "- 6 1000  800      raz.txt";
 
 
-        Main.main(new String[] {"-l", testDirNameRoot});
+        Main.main(new String[] {"-l", testDirRootName});
         System.out.println(separator);
 
         assertEquals(expected, readOutput());
@@ -97,20 +102,107 @@ public class TestUnit
     @Test
     void testCaseHumanReadableDir() throws IOException
     {
+        System.setOut(ps);
         String expected =
-                        "--w-  01.01.1970 03:00:01  1K 576B      dva.saf\n" +
-                        "drwx  01.01.1970 03:00:01  0        dasIstDirectory\n" +
-                        "-rwx  01.01.1970 03:00:01  2K 352B      tri.pat\n" +
+                "--w-  01.01.1970 03:00:01  1K 576B      dva.saf" + System.lineSeparator() +
+                        "drwx  01.01.1970 03:00:01  0        dasIstDirectory" + System.lineSeparator() +
+                        "-rwx  01.01.1970 03:00:01  2K 352B      tri.pat" + System.lineSeparator() +
                         "-rw-  01.01.1970 03:00:01  800B      raz.txt";
 
 
-        Main.main(new String[] {"-h", testDirNameRoot});
+        Main.main(new String[] {"-h", testDirRootName});
         System.out.println(separator);
 
         assertEquals(expected, readOutput());
     }
 
+    @Test
+    void testCaseReversedHumanReadable() throws IOException
+    {
+        System.setOut(ps);
+        String expected =
+                "-rw-  01.01.1970 03:00:01  800B      raz.txt" + System.lineSeparator() +
+                        "-rwx  01.01.1970 03:00:01  2K 352B      tri.pat" + System.lineSeparator() +
+                        "drwx  01.01.1970 03:00:01  0        dasIstDirectory" + System.lineSeparator() +
+                        "--w-  01.01.1970 03:00:01  1K 576B      dva.saf";
 
+        Main.main(new String[] {"-h", "-r", testDirRootName});
+        System.out.println(separator);
+
+        assertEquals(expected, readOutput());
+    }
+
+    @Test
+    void testCaseInvalidFlagsMixCrush() throws IOException
+    {
+        System.setOut(ps);
+        String expected =
+                "[outfile] <lsdir> : path to ls and file to output" + System.lineSeparator() +
+                        " -h                : Prints files info in human readable format, forbids -l" + System.lineSeparator() +
+                        "                     (default: true)" + System.lineSeparator() +
+                        " -l                : Print files with permissions, size and last modification" + System.lineSeparator() +
+                        "                     date, forbids -h (default: true)" + System.lineSeparator() +
+                        " -o [outfile]      : File to print ls result to (default: false)" + System.lineSeparator() +
+                        " -r                : Revert print order (default: false)";
+
+        Main.main(new String[] {"-l", "-h"});
+        System.out.println(separator);
+
+        assertEquals(expected, readOutput());
+    }
+
+    @Test
+    void testCaseInvalidArgsCrush() throws IOException
+    {
+        System.setOut(ps);
+        String expected =
+                "[outfile] <lsdir> : path to ls and file to output" + System.lineSeparator() +
+                        " -h                : Prints files info in human readable format, forbids -l" + System.lineSeparator() +
+                        "                     (default: false)" + System.lineSeparator() +
+                        " -l                : Print files with permissions, size and last modification" + System.lineSeparator() +
+                        "                     date, forbids -h (default: false)" + System.lineSeparator() +
+                        " -o [outfile]      : File to print ls result to (default: false)" + System.lineSeparator() +
+                        " -r                : Revert print order (default: false)";
+
+        Main.main(new String[] {"-sus"});
+        System.out.println(separator);
+
+        assertEquals(expected, readOutput());
+    }
+
+    @Test
+    void testCaseTooManyArgsCrush() throws IOException
+    {
+        System.setOut(ps);
+        String expected =
+                "[outfile] <lsdir> : path to ls and file to output (default: [sus,asd,sad])" + System.lineSeparator() +
+                        " -h                : Prints files info in human readable format, forbids -l" + System.lineSeparator() +
+                        "                     (default: false)" + System.lineSeparator() +
+                        " -l                : Print files with permissions, size and last modification" + System.lineSeparator() +
+                        "                     date, forbids -h (default: false)" + System.lineSeparator() +
+                        " -o [outfile]      : File to print ls result to (default: false)" + System.lineSeparator() +
+                        " -r                : Revert print order (default: false)";
+
+        Main.main(new String[] {"sus", "asd", "sad"});
+        System.out.println(separator);
+
+        assertEquals(expected, readOutput());
+    }
+
+    @Test
+    void testCaseHumanReadableDirToFile() throws IOException
+    {
+        String expected =
+                "--w-  01.01.1970 03:00:01  1K 576B      dva.saf" + System.lineSeparator() +
+                        "drwx  01.01.1970 03:00:01  0        dasIstDirectory" + System.lineSeparator() +
+                        "-rwx  01.01.1970 03:00:01  2K 352B      tri.pat" + System.lineSeparator() +
+                        "-rw-  01.01.1970 03:00:01  800B      raz.txt";
+
+
+        Main.main(new String[] {"-h", "-o", outFileName, testDirRootName});
+
+        assertEquals(expected, readOutputFromFile());
+    }
 
     private String readOutput() throws IOException
     {
@@ -121,15 +213,48 @@ public class TestUnit
         {
             if (s.equals(separator))
                 break;
-            sb.append(s).append("\n");
+            sb.append(s).append(System.lineSeparator());
         }
         return sb.toString().trim();
+    }
+
+    private String readOutputFromFile() throws IOException
+    {
+        String s;
+        StringBuilder sb = new StringBuilder();
+
+        while ((s = fileBr.readLine()) != null)
+        {
+            if (s.equals(separator))
+                break;
+            sb.append(s).append(System.lineSeparator());
+        }
+        reloadOutFile();
+
+        return sb.toString().trim();
+    }
+
+    private void reloadOutFile() throws IOException
+    {
+        outFile.delete();
+        outFile.createNewFile();
     }
 
     @AfterAll
     public void after()
     {
         deleteTestDirs();
+        try
+        {
+            fileBr.close();
+            br.close();
+            ps.close();
+            pis.close();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     private void createTestDir() throws IOException
@@ -138,6 +263,8 @@ public class TestUnit
         byte b = 0b1111111;
 
         testDirRoot.mkdir();
+
+        outFile.createNewFile();
 
         for (int i = 0; i < fileArray.length; i++)
         {

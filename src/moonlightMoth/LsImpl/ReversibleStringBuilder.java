@@ -3,7 +3,7 @@ package moonlightMoth.LsImpl;
 class ReversibleStringBuilder
 {
     private StringBuilder sb;
-    private boolean isReversedAppend = false;
+    private boolean isReversedAppend;
 
     ReversibleStringBuilder(boolean isReversedAppend)
     {
@@ -14,18 +14,6 @@ class ReversibleStringBuilder
     ReversibleStringBuilder append(String s)
     {
         if (isReversedAppend) sb.insert(0, s); else sb.append(s);
-        return this;
-    }
-
-    ReversibleStringBuilder append(int i)
-    {
-        if (isReversedAppend) sb.insert(0, i); else sb.append(i);
-        return this;
-    }
-
-    ReversibleStringBuilder append(char c)
-    {
-        if (isReversedAppend) sb.insert(0, c); else sb.append(c);
         return this;
     }
 

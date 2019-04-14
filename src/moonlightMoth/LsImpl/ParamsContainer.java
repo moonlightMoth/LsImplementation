@@ -62,7 +62,9 @@ class ParamsContainer
         StringBuilder sb = new StringBuilder();
         sb.append("Ls dir/file = ");
         sb.append(isOutputToFile ? args.get(1) : args.get(0));
-        sb.append(";\nFlags:");
+        sb.append(";");
+        sb.append(System.lineSeparator());
+        sb.append("Flags:");
         if (isExtendedOutput)
             sb.append(" -l");
         if (isHumanReadable)
@@ -71,7 +73,7 @@ class ParamsContainer
             sb.append(" -r");
         if (isOutputToFile)
             sb.append(" -o");
-        sb.append("\n");
+        sb.append(System.lineSeparator());
         if (isOutputToFile)
         {
             sb.append("Output file: ");

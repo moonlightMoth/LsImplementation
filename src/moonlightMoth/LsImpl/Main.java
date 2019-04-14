@@ -15,9 +15,5 @@ public class Main
         {
             LsInvoker.invoke(params);
         }
-
     }
-
-
-
 }

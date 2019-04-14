@@ -10,7 +10,6 @@ class LsInvoker
 {
     private static ParamsContainer pc;
     private static File file;
-    private static File outFile;
     private static ReversibleStringBuilder rsb;
     private static StringBuilder sb = new StringBuilder();
     private static SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
@@ -21,11 +20,6 @@ class LsInvoker
 
         rsb = new ReversibleStringBuilder(pc.isReversed);
 
-        init();
-    }
-
-    private static void init()
-    {
         file = new File(pc.args.get(pc.args.size()-1));
 
         if (!file.exists())
@@ -36,7 +30,7 @@ class LsInvoker
 
         if (pc.isOutputToFile)
         {
-            outFile = new File(pc.args.get(0));
+            File outFile = new File(pc.args.get(0));
             if (!outFile.exists())
             {
                 try
@@ -64,6 +58,11 @@ class LsInvoker
             }
         }
 
+        init();
+    }
+
+    private static void init()
+    {
         if (file.isDirectory())
         {
             if (!pc.isHumanReadable && !pc.isExtendedOutput)
@@ -84,7 +83,6 @@ class LsInvoker
         }
 
         System.out.print(rsb.toString());
-
     }
 
     private static void listDirOutput()
@@ -114,7 +112,7 @@ class LsInvoker
     private static void listFileOutput(File file)
     {
         sb.append(file.getName());
-        sb.append("\n");
+        sb.append(System.lineSeparator());
 
         rsb.append(sb);
         sb.delete(0, sb.length());
@@ -137,7 +135,7 @@ class LsInvoker
         sb.append(file.isDirectory() ? "0  " : file.length());
         sb.append("      ");
         sb.append(file.getName());
-        sb.append("\n");
+        sb.append(System.lineSeparator());
 
         rsb.append(sb);
         sb.delete(0, sb.length());
@@ -154,7 +152,7 @@ class LsInvoker
         sb.append(file.isDirectory() ? "0  " : getFileSizeHumanReadable(file));
         sb.append("      ");
         sb.append(file.getName());
-        sb.append("\n");
+        sb.append(System.lineSeparator());
 
         rsb.append(sb);
         sb.delete(0, sb.length());
