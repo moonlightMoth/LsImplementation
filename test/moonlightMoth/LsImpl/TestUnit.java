@@ -14,8 +14,8 @@ public class TestUnit
     private BufferedReader br;
     private BufferedReader fileBr;
 
-    private String testDirRootName = "testDir/";
-    private String dirName = testDirRootName + "dasIstDirectory/";
+    private String testDirRootName = "testDir" + System.getProperty("file.separator");
+    private String dirName = testDirRootName + "dasIstDirectory" + System.getProperty("file.separator");
     private String outFileName = "outputFile.txt";
     private File testDirRoot = new File(testDirRootName);
     private File outFile = new File(outFileName);
@@ -142,7 +142,7 @@ public class TestUnit
                         "                     (default: true)" + System.lineSeparator() +
                         " -l                : Print files with permissions, size and last modification" + System.lineSeparator() +
                         "                     date, forbids -h (default: true)" + System.lineSeparator() +
-                        " -o [outfile]      : File to print ls result to (default: false)" + System.lineSeparator() +
+                        " -o [outfile]      : File to print ls result to" + System.lineSeparator() +
                         " -r                : Revert print order (default: false)";
 
         Main.main(new String[] {"-l", "-h"});
@@ -161,7 +161,7 @@ public class TestUnit
                         "                     (default: false)" + System.lineSeparator() +
                         " -l                : Print files with permissions, size and last modification" + System.lineSeparator() +
                         "                     date, forbids -h (default: false)" + System.lineSeparator() +
-                        " -o [outfile]      : File to print ls result to (default: false)" + System.lineSeparator() +
+                        " -o [outfile]      : File to print ls result to" + System.lineSeparator() +
                         " -r                : Revert print order (default: false)";
 
         Main.main(new String[] {"-sus"});
@@ -180,7 +180,7 @@ public class TestUnit
                         "                     (default: false)" + System.lineSeparator() +
                         " -l                : Print files with permissions, size and last modification" + System.lineSeparator() +
                         "                     date, forbids -h (default: false)" + System.lineSeparator() +
-                        " -o [outfile]      : File to print ls result to (default: false)" + System.lineSeparator() +
+                        " -o [outfile]      : File to print ls result to" + System.lineSeparator() +
                         " -r                : Revert print order (default: false)";
 
         Main.main(new String[] {"sus", "asd", "sad"});

@@ -17,15 +17,10 @@ class ParamsContainer
     boolean isReversed;
 
     @Option(name = "-o", usage = "File to print ls result to", metaVar = "[outfile]")
-    boolean isOutputToFile;
+    String outputToFile;
 
     @Argument (usage = "path to ls and file to output", metaVar = "[outfile] <lsdir>")
     List<String> args = new ArrayList<>();
-
-    private ParamsContainer()
-    {
-
-    }
 
     static ParamsContainer getInstance(String[] args)
     {
@@ -36,13 +31,13 @@ class ParamsContainer
         {
             parser.parseArgument(args);
 
-            if (params.args.size() > 2 || params.args.isEmpty() && params.isOutputToFile)
+            if (params.args.size() > 1)
             {
                 parser.printUsage(System.out);
                 return null;
             }
 
-            if (params.args.isEmpty() || params.args.size() == 1 && params.isOutputToFile)
+            if (params.args.isEmpty())
                 params.args.add(".");
 
         }
@@ -61,7 +56,7 @@ class ParamsContainer
     {
         StringBuilder sb = new StringBuilder();
         sb.append("Ls dir/file = ");
-        sb.append(isOutputToFile ? args.get(1) : args.get(0));
+        sb.append(args.get(0));
         sb.append(";");
         sb.append(System.lineSeparator());
         sb.append("Flags:");
@@ -71,13 +66,13 @@ class ParamsContainer
             sb.append(" -h");
         if (isReversed)
             sb.append(" -r");
-        if (isOutputToFile)
+        if (outputToFile != null)
             sb.append(" -o");
         sb.append(System.lineSeparator());
-        if (isOutputToFile)
+        if (outputToFile != null)
         {
             sb.append("Output file: ");
-            sb.append(args.get(0));
+            sb.append(outputToFile);
         }
 
         return sb.toString();

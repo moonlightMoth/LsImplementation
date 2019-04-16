@@ -6,7 +6,6 @@ group 'moonlightMoth.group'
 
 sourceCompatibility = 1.8
 
-libsDirName = '/home/moonlightmoth/artifacts/LsImplementation'
 
 repositories {
     mavenCentral()

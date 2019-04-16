@@ -1,10 +1,12 @@
 package moonlightMoth.LsImpl;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 
 class LsInvoker
 {
@@ -14,13 +16,13 @@ class LsInvoker
     private static StringBuilder sb = new StringBuilder();
     private static SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 
-    static void invoke(ParamsContainer pc)
+    static void invoke(ParamsContainer pc) throws IOException
     {
         LsInvoker.pc = pc;
 
         rsb = new ReversibleStringBuilder(pc.isReversed);
 
-        file = new File(pc.args.get(pc.args.size()-1));
+        file = new File(pc.args.get(0));
 
         if (!file.exists())
         {
@@ -28,34 +30,17 @@ class LsInvoker
             return;
         }
 
-        if (pc.isOutputToFile)
+        if (pc.outputToFile != null)
         {
-            File outFile = new File(pc.args.get(0));
+            File outFile = new File(pc.outputToFile);
             if (!outFile.exists())
-            {
-                try
-                {
-                    if (outFile.createNewFile())
-                        System.setOut(new PrintStream(outFile));
-                    else
-                        System.out.println("cannot create output file");
-                }
-                catch (IOException e)
-                {
-                    e.printStackTrace();
-                }
-            }
-            else
-            {
-                try
-                {
+                if (outFile.createNewFile())
                     System.setOut(new PrintStream(outFile));
-                }
-                catch (FileNotFoundException e)
-                {
-                    e.printStackTrace();
-                }
-            }
+                else
+                    System.out.println("cannot create output file");
+
+            else
+                System.setOut(new PrintStream(outFile));
         }
 
         init();
@@ -87,7 +72,7 @@ class LsInvoker
 
     private static void listDirOutput()
     {
-        for (File f: file.listFiles())
+        for (File f: sortFiles(file.listFiles()))
         {
             listFileOutput(f);
         }
@@ -95,7 +80,7 @@ class LsInvoker
 
     private static void listExtendedDirOutput()
     {
-        for (File f: file.listFiles())
+        for (File f: sortFiles(file.listFiles()))
         {
             listExtendedFileOutput(f);
         }
@@ -103,7 +88,7 @@ class LsInvoker
 
     private static void listHumanReadableDirOutput()
     {
-        for (File f: file.listFiles())
+        for (File f: sortFiles(file.listFiles()))
         {
             listHumanReadableFileOutput(f);
         }
@@ -165,7 +150,7 @@ class LsInvoker
         int rem = 0;
         int counter = 0;
 
-        while (sizeBytes / 1024 > 0)
+        while (sizeBytes / 1024 > 0 && counter < 4)
         {
             rem = (int)(sizeBytes % 1024);
             sizeBytes = sizeBytes / 1024;
@@ -190,4 +175,11 @@ class LsInvoker
             default: return "?";
         }
     }
+
+    private static File[] sortFiles(File[] files)
+    {
+        Arrays.sort(files, (Comparator.comparing(File::getName)));
+        return files;
+    }
+
 }
