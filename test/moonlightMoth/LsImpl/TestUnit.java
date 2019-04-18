@@ -32,6 +32,10 @@ public class TestUnit
             new File ( dirName + "gamma.pat"),
             new File ( dirName + "omega")};
 
+
+
+    private PrintStream old = System.out;
+
     @BeforeAll
     public void before()
     {
@@ -55,6 +59,7 @@ public class TestUnit
             e.printStackTrace();
         }
 
+
         br = new BufferedReader(new InputStreamReader(pis));
         try
         {
@@ -71,7 +76,10 @@ public class TestUnit
     {
         System.setOut(ps);
         String expected =
-                "dva.saf" + System.lineSeparator() + "dasIstDirectory" + System.lineSeparator() + "tri.pat" + System.lineSeparator() + "raz.txt";
+                "dasIstDirectory" + System.lineSeparator() +
+                        "dva.saf" + System.lineSeparator() +
+                        "raz.txt" + System.lineSeparator() +
+                        "tri.pat";
 
 
         Main.main(new String[] {testDirRootName});
@@ -87,10 +95,10 @@ public class TestUnit
     {
         System.setOut(ps);
         String expected =
-                        "- 2 1000  1600      dva.saf" + System.lineSeparator() +
                         "d 7 1000  0        dasIstDirectory" + System.lineSeparator() +
-                        "- 7 1000  2400      tri.pat" + System.lineSeparator() +
-                        "- 6 1000  800      raz.txt";
+                        "- 2 1000  1600      dva.saf" + System.lineSeparator() +
+                        "- 6 1000  800      raz.txt" + System.lineSeparator() +
+                        "- 7 1000  2400      tri.pat";
 
 
         Main.main(new String[] {"-l", testDirRootName});
@@ -121,10 +129,10 @@ public class TestUnit
     {
         System.setOut(ps);
         String expected =
-                "-rw-  01.01.1970 03:00:01  800B      raz.txt" + System.lineSeparator() +
-                        "-rwx  01.01.1970 03:00:01  2K 352B      tri.pat" + System.lineSeparator() +
-                        "drwx  01.01.1970 03:00:01  0        dasIstDirectory" + System.lineSeparator() +
-                        "--w-  01.01.1970 03:00:01  1K 576B      dva.saf";
+                "-rwx  01.01.1970 03:00:01  2K 352B      tri.pat" + System.lineSeparator() +
+                        "-rw-  01.01.1970 03:00:01  800B      raz.txt" + System.lineSeparator() +
+                        "--w-  01.01.1970 03:00:01  1K 576B      dva.saf" + System.lineSeparator() +
+                        "drwx  01.01.1970 03:00:01  0        dasIstDirectory";
 
         Main.main(new String[] {"-h", "-r", testDirRootName});
         System.out.println(separator);
@@ -193,10 +201,10 @@ public class TestUnit
     void testCaseHumanReadableDirToFile() throws IOException
     {
         String expected =
-                "--w-  01.01.1970 03:00:01  1K 576B      dva.saf" + System.lineSeparator() +
-                        "drwx  01.01.1970 03:00:01  0        dasIstDirectory" + System.lineSeparator() +
-                        "-rwx  01.01.1970 03:00:01  2K 352B      tri.pat" + System.lineSeparator() +
-                        "-rw-  01.01.1970 03:00:01  800B      raz.txt";
+                "drwx  01.01.1970 03:00:01  0        dasIstDirectory" + System.lineSeparator() +
+                        "--w-  01.01.1970 03:00:01  1K 576B      dva.saf" + System.lineSeparator() +
+                        "-rw-  01.01.1970 03:00:01  800B      raz.txt" + System.lineSeparator() +
+                        "-rwx  01.01.1970 03:00:01  2K 352B      tri.pat";
 
 
         Main.main(new String[] {"-h", "-o", outFileName, testDirRootName});
@@ -309,7 +317,8 @@ public class TestUnit
 
         for (File file : fileArrayInDir)
         {
-            file.delete();
+            ;
+            old.println(file.delete());
         }
 
         dirFile.delete();
