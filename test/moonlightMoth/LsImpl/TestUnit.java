@@ -112,10 +112,10 @@ public class TestUnit
     {
         System.setOut(ps);
         String expected =
-                "--w-  01.01.1970 03:00:01  1K 576B      dva.saf" + System.lineSeparator() +
-                        "drwx  01.01.1970 03:00:01  0        dasIstDirectory" + System.lineSeparator() +
-                        "-rwx  01.01.1970 03:00:01  2K 352B      tri.pat" + System.lineSeparator() +
-                        "-rw-  01.01.1970 03:00:01  800B      raz.txt";
+                "drwx  01.01.1970 03:00:01  0        dasIstDirectory" + System.lineSeparator() +
+                        "--w-  01.01.1970 03:00:01  1K 576B      dva.saf" + System.lineSeparator() +
+                        "-rw-  01.01.1970 03:00:01  800B      raz.txt" + System.lineSeparator() +
+                        "-rwx  01.01.1970 03:00:01  2K 352B      tri.pat";
 
 
         Main.main(new String[] {"-h", testDirRootName});
