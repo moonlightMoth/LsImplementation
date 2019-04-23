@@ -4,12 +4,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 
 class LsInvoker
 {
+    private static PrintStream filePrintStream = null;
     private static ParamsContainer pc;
     private static File file;
     private static ReversibleStringBuilder rsb;
@@ -33,14 +33,15 @@ class LsInvoker
         if (pc.outputToFile != null)
         {
             File outFile = new File(pc.outputToFile);
+            filePrintStream = new PrintStream(outFile);
             if (!outFile.exists())
                 if (outFile.createNewFile())
-                    System.setOut(new PrintStream(outFile));
+                    System.setOut(filePrintStream);
                 else
                     System.out.println("cannot create output file");
 
             else
-                System.setOut(new PrintStream(outFile));
+                System.setOut(filePrintStream);
         }
 
         init();
@@ -68,6 +69,8 @@ class LsInvoker
         }
 
         System.out.print(rsb.toString());
+        if (filePrintStream != null)
+            filePrintStream.close();
     }
 
     private static void listDirOutput()

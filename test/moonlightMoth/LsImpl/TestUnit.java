@@ -4,18 +4,21 @@ import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.attribute.PosixFilePermission;
+import java.util.HashSet;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class TestUnit
 {
     private PipedInputStream pis = new PipedInputStream();
-    private PrintStream ps;
+    private PrintStream ps = null;
     private String separator = "###";
-    private BufferedReader br;
-    private BufferedReader fileBr;
+    private BufferedReader br = null;
+    private BufferedReader fileBr = null;
 
-    private String testDirRootName = "testDir" + System.getProperty("file.separator");
-    private String dirName = testDirRootName + "dasIstDirectory" + System.getProperty("file.separator");
+    private String testDirRootName = "testDir" + File.separator;
+    private String dirName = testDirRootName + "dasIstDirectory" + File.separator;
     private String outFileName = "outputFile.txt";
     private File testDirRoot = new File(testDirRootName);
     private File outFile = new File(outFileName);
@@ -25,16 +28,6 @@ public class TestUnit
             new File(testDirRootName + "raz.txt"),
             new File(testDirRootName + "dva.saf"),
             new File (testDirRootName + "tri.pat")};
-
-    private File[] fileArrayInDir = new File[] {
-            new File(dirName + "alpha.txt"),
-            new File(dirName + "beta.saf"),
-            new File ( dirName + "gamma.pat"),
-            new File ( dirName + "omega")};
-
-
-
-    private PrintStream old = System.out;
 
     @BeforeAll
     public void before()
@@ -251,18 +244,19 @@ public class TestUnit
     @AfterAll
     public void after()
     {
-        deleteTestDirs();
         try
         {
             fileBr.close();
             br.close();
             ps.close();
             pis.close();
+            System.out.close();
         }
         catch (IOException e)
         {
             e.printStackTrace();
         }
+        deleteTestDirs();
     }
 
     private void createTestDir() throws IOException
@@ -283,23 +277,22 @@ public class TestUnit
                 pw.write(b);
             }
             pw.flush();
+            pw.close();
         }
 
-        fileArray[1].setReadable(false);
-        fileArray[2].setExecutable(true);
+        try
+        {
+            setPermissionsPosix(fileArray[0], true, true, true);
+            setPermissionsPosix(fileArray[1], false, true, false);
+            setPermissionsPosix(fileArray[2], false, true, true);
+        }
+        catch (UnsupportedOperationException e)
+        {
+            e.printStackTrace();
+        }
+
 
         dirFile.mkdir();
-
-        for (int i = 0; i < fileArrayInDir.length; i++)
-        {
-            pw = new PrintWriter(fileArrayInDir[i]);
-            fileArrayInDir[i].createNewFile();
-            for (int j = 0; j < i*20; j++)
-            {
-                pw.write(b);
-            }
-            pw.flush();
-        }
 
         long conventionalLastModified = 1000;
 
@@ -309,17 +302,24 @@ public class TestUnit
         }
 
         dirFile.setLastModified(conventionalLastModified);
+
     }
+
+    private void setPermissionsPosix(File f, boolean read, boolean write, boolean execute) throws IOException
+    {
+        HashSet<PosixFilePermission> set = new HashSet<>();
+
+        set.add(read ? PosixFilePermission.OTHERS_READ : null);
+        set.add(write ? PosixFilePermission.OTHERS_WRITE : null);
+        set.add(execute ? PosixFilePermission.OTHERS_EXECUTE : null);
+
+        Files.setPosixFilePermissions(f.toPath(), set);
+    }
+
 
     private void deleteTestDirs()
     {
         outFile.delete();
-
-        for (File file : fileArrayInDir)
-        {
-            ;
-            old.println(file.delete());
-        }
 
         dirFile.delete();
 
