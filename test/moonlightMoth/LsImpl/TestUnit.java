@@ -282,9 +282,9 @@ public class TestUnit
 
         try
         {
-            setPermissionsPosix(fileArray[0], true, true, true);
+            setPermissionsPosix(fileArray[0], true, true, false);
             setPermissionsPosix(fileArray[1], false, true, false);
-            setPermissionsPosix(fileArray[2], false, true, true);
+            setPermissionsPosix(fileArray[2], true, true, true);
         }
         catch (UnsupportedOperationException e)
         {
@@ -309,9 +309,25 @@ public class TestUnit
     {
         HashSet<PosixFilePermission> set = new HashSet<>();
 
-        set.add(read ? PosixFilePermission.OTHERS_READ : null);
-        set.add(write ? PosixFilePermission.OTHERS_WRITE : null);
-        set.add(execute ? PosixFilePermission.OTHERS_EXECUTE : null);
+        if (read)
+        {
+            set.add(PosixFilePermission.OWNER_READ);
+            set.add(PosixFilePermission.GROUP_READ);
+            set.add(PosixFilePermission.OTHERS_READ);
+        }
+        if (write)
+        {
+            set.add(PosixFilePermission.OWNER_WRITE);
+            set.add(PosixFilePermission.GROUP_WRITE);
+            set.add(PosixFilePermission.OTHERS_WRITE);
+        }
+        if (execute)
+        {
+            set.add(PosixFilePermission.OWNER_EXECUTE);
+            set.add(PosixFilePermission.GROUP_EXECUTE);
+            set.add(PosixFilePermission.OTHERS_EXECUTE);
+        }
+
 
         Files.setPosixFilePermissions(f.toPath(), set);
     }
