@@ -288,7 +288,17 @@ public class TestUnit
         }
         catch (UnsupportedOperationException e)
         {
-            e.printStackTrace();
+            fileArray[0].setReadable(true);
+            fileArray[0].setWritable(true);
+            fileArray[0].setExecutable(false);
+
+            fileArray[1].setReadable(false);
+            fileArray[1].setWritable(true);
+            fileArray[1].setExecutable(false);
+
+            fileArray[2].setReadable(true);
+            fileArray[2].setWritable(true);
+            fileArray[2].setExecutable(true);
         }
 
 
