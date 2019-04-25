@@ -30,38 +30,17 @@ public class TestUnit
             new File (testDirRootName + "tri.pat")};
 
     @BeforeAll
-    public void before()
+    public void before() throws IOException
     {
-        try
-        {
-            ps = new PrintStream(new PipedOutputStream(pis));
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
+        ps = new PrintStream(new PipedOutputStream(pis));
 
         System.setOut(ps);
 
-        try
-        {
-            createTestDir();
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-
+        createTestDir();
 
         br = new BufferedReader(new InputStreamReader(pis));
-        try
-        {
-            fileBr = new BufferedReader(new FileReader(outFileName));
-        }
-        catch (FileNotFoundException e)
-        {
-            e.printStackTrace();
-        }
+
+        fileBr = new BufferedReader(new FileReader(outFileName));
     }
 
     @Test
@@ -242,20 +221,15 @@ public class TestUnit
     }
 
     @AfterAll
-    public void after()
+    public void after() throws IOException
     {
-        try
-        {
-            fileBr.close();
-            br.close();
-            ps.close();
-            pis.close();
-            System.out.close();
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
+
+        fileBr.close();
+        br.close();
+        ps.close();
+        pis.close();
+        System.out.close();
+
         deleteTestDirs();
     }
 
