@@ -3,7 +3,6 @@ package moonlightMoth.LsImpl;
 import org.kohsuke.args4j.*;
 
 import java.util.ArrayList;
-import java.util.List;
 
 class ParamsContainer
 {
@@ -20,7 +19,7 @@ class ParamsContainer
     String outputToFile;
 
     @Argument (usage = "path to ls and file to output", metaVar = "[outfile] <lsdir>")
-    List<String> args = new ArrayList<>();
+    String lsCat = "";
 
     static ParamsContainer getInstance(String[] args)
     {
@@ -31,14 +30,10 @@ class ParamsContainer
         {
             parser.parseArgument(args);
 
-            if (params.args.size() > 1)
+            if (params.lsCat.equals(""))
             {
-                parser.printUsage(System.out);
-                return null;
+                params.lsCat = ".";
             }
-
-            if (params.args.isEmpty())
-                params.args.add(".");
 
         }
         catch (CmdLineException e)
@@ -56,7 +51,7 @@ class ParamsContainer
     {
         StringBuilder sb = new StringBuilder();
         sb.append("Ls dir/file = ");
-        sb.append(args.get(0));
+        sb.append(lsCat);
         sb.append(";");
         sb.append(System.lineSeparator());
         sb.append("Flags:");

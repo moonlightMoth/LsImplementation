@@ -22,7 +22,7 @@ class LsInvoker
 
         rsb = new ReversibleStringBuilder(pc.isReversed);
 
-        file = new File(pc.args.get(0));
+        file = new File(pc.lsCat);
 
         if (!file.exists())
         {

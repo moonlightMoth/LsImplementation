@@ -57,7 +57,7 @@ public class TestUnit
         Main.main(new String[] {testDirRootName});
         System.out.println(separator);
 
-        assertEquals(expected, readOutput());
+        assertEquals(expected, this.readOutputFromStream());
     }
 
 
@@ -76,7 +76,7 @@ public class TestUnit
         Main.main(new String[] {"-l", testDirRootName});
         System.out.println(separator);
 
-        assertEquals(expected, readOutput());
+        assertEquals(expected, this.readOutputFromStream());
     }
 
     @Test
@@ -93,7 +93,7 @@ public class TestUnit
         Main.main(new String[] {"-h", testDirRootName});
         System.out.println(separator);
 
-        assertEquals(expected, readOutput());
+        assertEquals(expected, this.readOutputFromStream());
     }
 
     @Test
@@ -109,7 +109,7 @@ public class TestUnit
         Main.main(new String[] {"-h", "-r", testDirRootName});
         System.out.println(separator);
 
-        assertEquals(expected, readOutput());
+        assertEquals(expected, this.readOutputFromStream());
     }
 
     @Test
@@ -117,7 +117,7 @@ public class TestUnit
     {
         System.setOut(ps);
         String expected =
-                "[outfile] <lsdir> : path to ls and file to output" + System.lineSeparator() +
+                "[outfile] <lsdir> : path to ls and file to output (default: )" + System.lineSeparator() +
                         " -h                : Prints files info in human readable format, forbids -l" + System.lineSeparator() +
                         "                     (default: true)" + System.lineSeparator() +
                         " -l                : Print files with permissions, size and last modification" + System.lineSeparator() +
@@ -128,7 +128,7 @@ public class TestUnit
         Main.main(new String[] {"-l", "-h"});
         System.out.println(separator);
 
-        assertEquals(expected, readOutput());
+        assertEquals(expected, this.readOutputFromStream());
     }
 
     @Test
@@ -136,7 +136,7 @@ public class TestUnit
     {
         System.setOut(ps);
         String expected =
-                "[outfile] <lsdir> : path to ls and file to output" + System.lineSeparator() +
+                "[outfile] <lsdir> : path to ls and file to output (default: )" + System.lineSeparator() +
                         " -h                : Prints files info in human readable format, forbids -l" + System.lineSeparator() +
                         "                     (default: false)" + System.lineSeparator() +
                         " -l                : Print files with permissions, size and last modification" + System.lineSeparator() +
@@ -147,7 +147,7 @@ public class TestUnit
         Main.main(new String[] {"-sus"});
         System.out.println(separator);
 
-        assertEquals(expected, readOutput());
+        assertEquals(expected, this.readOutputFromStream());
     }
 
     @Test
@@ -155,7 +155,7 @@ public class TestUnit
     {
         System.setOut(ps);
         String expected =
-                "[outfile] <lsdir> : path to ls and file to output (default: [sus,asd,sad])" + System.lineSeparator() +
+                "[outfile] <lsdir> : path to ls and file to output (default: sus)" + System.lineSeparator() +
                         " -h                : Prints files info in human readable format, forbids -l" + System.lineSeparator() +
                         "                     (default: false)" + System.lineSeparator() +
                         " -l                : Print files with permissions, size and last modification" + System.lineSeparator() +
@@ -166,7 +166,7 @@ public class TestUnit
         Main.main(new String[] {"sus", "asd", "sad"});
         System.out.println(separator);
 
-        assertEquals(expected, readOutput());
+        assertEquals(expected, this.readOutputFromStream());
     }
 
     @Test
@@ -184,7 +184,7 @@ public class TestUnit
         assertEquals(expected, readOutputFromFile());
     }
 
-    private String readOutput() throws IOException
+    private String readOutput(BufferedReader br) throws IOException
     {
         String s;
         StringBuilder sb = new StringBuilder();
@@ -200,18 +200,15 @@ public class TestUnit
 
     private String readOutputFromFile() throws IOException
     {
-        String s;
-        StringBuilder sb = new StringBuilder();
-
-        while ((s = fileBr.readLine()) != null)
-        {
-            if (s.equals(separator))
-                break;
-            sb.append(s).append(System.lineSeparator());
-        }
+        String s = readOutput(fileBr);
         reloadOutFile();
 
-        return sb.toString().trim();
+        return s;
+    }
+
+    private String readOutputFromStream() throws IOException
+    {
+        return readOutput(br);
     }
 
     private void reloadOutFile() throws IOException
